@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -39,4 +40,6 @@ public class Autor {
         this.dataNascimento = dataNascimento;
         this.nacionalidade = nacionalidade;
     }
+    @OneToMany(mappedBy = "autor")//refere ao mapeamento,um autor para muitos livros
+    private List<Livro> livros;
 }
