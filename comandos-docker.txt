@@ -10,3 +10,6 @@ docker create network libary-network
  #Rodar Pgadmin4
  docker run --name pgadmin4 -p 15432:80 -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=admin -d --network libary-network dpage/pgadmin4
  # o -d roda em background, que é pode fechar o cmd, que ele não vai para de rodar
+
+ #Sempre verificar senao tiver, antes algum postgre que vc tenha usado anteriormente,pois isso pode dar erro e tb na questao da porta dele
+ # ai pare esse servico para usar esta porta ;)
