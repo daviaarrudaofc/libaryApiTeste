@@ -1,0 +1,12 @@
+Check port:
+netstaf -aof | findstr 5432
+
+#Create Network
+docker create network libary-network
+
+ #Rodar Container Postgre na versão 18.6
+ docker run --name libarydb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=libary -d --network libary-network postgres:18.6
+
+ #Rodar Pgadmin4
+ docker run --name pgadmin4 -p 15432:80 -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=admin -d --network libary-network dpage/pgadmin4
+ # o -d roda em background, que é pode fechar o cmd, que ele não vai para de rodar
