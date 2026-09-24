@@ -22,7 +22,7 @@ public class DatabaseConfiguration {
     @Value("${spring.datasource.driver-class-name}")
     String driver;
 
-    @Bean
+    //@Bean
     public DataSource dataSource(){ // datasource fraco// prove so uma conexao fraca
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setUrl(url);

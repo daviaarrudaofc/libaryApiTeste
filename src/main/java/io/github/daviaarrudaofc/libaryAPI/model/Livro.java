@@ -3,6 +3,7 @@ package io.github.daviaarrudaofc.libaryAPI.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -10,8 +11,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "livro")
 public class Livro {
-    @Id()
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
@@ -20,6 +22,7 @@ public class Livro {
 
     @Column(name = "titulo", length = 150, nullable = false)
     private String titulo;
+
     @Column(name = "data_publicacao")
     private LocalDate dataPublicacao;
 
@@ -27,12 +30,12 @@ public class Livro {
     @Column(name = "genero", length = 30, nullable = false)
     private GeneroLivro genero;
 
-    @Column(name = "preco", precision = 18, scale = 2)
-    private Double preco;
+    @Column(name = "preco", precision = 12)
+    private BigDecimal preco;
 
 
-    @ManyToOne// refere ao mapeamento, muitos livros para um autor
+    @ManyToOne(cascade =  CascadeType.ALL)// refere ao mapeamento, muitos livros para um autor
     @JoinColumn(name = "id_autor")
-    private Autor idAutor;
+    private Autor autor;
 
 }
