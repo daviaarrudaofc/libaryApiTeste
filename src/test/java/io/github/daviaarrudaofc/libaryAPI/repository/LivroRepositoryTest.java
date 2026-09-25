@@ -164,5 +164,16 @@ public class LivroRepositoryTest {
         resultado.forEach(System.out::println);
     }
 
+    @Test
+    void listarPorGeneroQueryParam(){
+        var resultado = livroRepository.findByGenero(GeneroLivro.MISTERIO, "preco");
+        resultado.forEach(System.out::println);
+    }
+
+    @Test
+    void listarPorGeneroPositionalParam(){
+        var resultado = livroRepository.findByGeneroPositionalParameters(GeneroLivro.MISTERIO, "preco");
+        resultado.forEach(System.out::println);
+    }
 
 }
