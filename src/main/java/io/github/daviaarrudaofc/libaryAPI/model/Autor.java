@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "autor", schema = "public")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "livros")
 public class Autor {
 
     @Id
@@ -42,7 +42,6 @@ public class Autor {
         this.dataNascimento = dataNascimento;
         this.nacionalidade = nacionalidade;
     }
-    //@OneToMany(mappedBy = "autor")//refere ao mapeamento,um autor para muitos livros
-    @Transient
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)//refere ao mapeamento,um autor para muitos livros
     private List<Livro> livros;
 }

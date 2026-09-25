@@ -7,6 +7,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -104,5 +105,17 @@ public class LivroRepositoryTest {
     public void deletarCascade(){
         UUID id = UUID.fromString("eace85d9-9cc9-44f5-a05a-4941fd04c1df");
         repository.deleteById(id);
+    }
+
+    @Test
+    @Transactional // a do spring,abriu uma janela para fazer operações do banco e so vai fechar a execu do method
+    public void  buscarLivroTest(){
+        UUID id = UUID.fromString("74034080-f07f-4f0a-a2ba-87c3a72baef9");
+        Livro livro = repository.findById(id).orElse(null);
+        System.out.println("Livro: ");
+        System.out.println(livro.getTitulo());
+
+        System.out.println("Autor: ");
+        System.out.println(livro.getAutor().getNome());
     }
 }
