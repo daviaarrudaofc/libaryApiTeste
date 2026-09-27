@@ -3,8 +3,10 @@ package io.github.daviaarrudaofc.libaryAPI.controller.dto;
 import io.github.daviaarrudaofc.libaryAPI.model.Autor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record AutorDTO(
+        UUID id,
         String nome,
         LocalDate dataNascimento,
         String nacionalidade) {

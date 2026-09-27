@@ -2,8 +2,10 @@ package io.github.daviaarrudaofc.libaryAPI;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
+@EnableJpaAuditing// Ativa a auditoria JPA para preencher automaticamente datas de criação e atualização
 public class Application {
 
 	public static void main(String[] args) {

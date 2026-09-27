@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +19,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString(exclude = "livros")
+@EntityListeners(AuditingEntityListener.class) // Ativa o monitoramento da entidade
+                                        // para preencher automaticamente datas de criação e atualização
 public class Autor {
 
     @Id
@@ -44,4 +50,16 @@ public class Autor {
     }
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)//refere ao mapeamento,um autor para muitos livros
     private List<Livro> livros;
+
+    @CreatedDate// Preenche automaticamente quando o registro é criado
+    @Column(name = "data_cadastro")
+    private LocalDateTime dataCadastro;
+
+    @LastModifiedDate// Atualiza automaticamente sempre que o registro for alterado
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+
+    @Column(name = "id_usuario")
+    private UUID id_usuario;
+
 }
