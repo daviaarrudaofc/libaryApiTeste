@@ -5,6 +5,7 @@ import io.github.daviaarrudaofc.libaryAPI.model.Autor;
 import io.github.daviaarrudaofc.libaryAPI.repository.AutorRepository;
 import io.github.daviaarrudaofc.libaryAPI.repository.LivroRepository;
 import io.github.daviaarrudaofc.libaryAPI.validator.AutorValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AutorService {
 
     @Autowired
     LivroRepository livroRepository;
-
     @Autowired
     AutorRepository autorRepository;
-
     @Autowired
     AutorValidator autorValidator;
 
