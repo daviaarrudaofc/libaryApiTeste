@@ -6,6 +6,7 @@ import io.github.daviaarrudaofc.libaryAPI.exceptions.OperacaoNaoPermitidaExcepti
 import io.github.daviaarrudaofc.libaryAPI.exceptions.RegistroDuplicadoException;
 import io.github.daviaarrudaofc.libaryAPI.model.Autor;
 import io.github.daviaarrudaofc.libaryAPI.service.AutorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class AutorController {
 
     //ResponseEntity, ele representa todos os dados que se pode retornar da Resposta!
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor){
+    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autor){
         try {
             var autorEntidade = autor.mapearParaAutor();
             autorService.salvar(autorEntidade);
