@@ -48,7 +48,11 @@ public class Autor {
         this.dataNascimento = dataNascimento;
         this.nacionalidade = nacionalidade;
     }
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)//refere ao mapeamento,um autor para muitos livros
+    @OneToMany(
+            mappedBy = "autor",
+           // cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )//refere ao mapeamento,um autor para muitos livros
     private List<Livro> livros;
 
     @CreatedDate// Preenche automaticamente quando o registro é criado

@@ -1,6 +1,9 @@
 package io.github.daviaarrudaofc.libaryAPI.controller;
 
 import io.github.daviaarrudaofc.libaryAPI.controller.dto.AutorDTO;
+import io.github.daviaarrudaofc.libaryAPI.controller.dto.ErroResposta;
+import io.github.daviaarrudaofc.libaryAPI.exceptions.OperacaoNaoPermitidaException;
+import io.github.daviaarrudaofc.libaryAPI.exceptions.RegistroDuplicadoException;
 import io.github.daviaarrudaofc.libaryAPI.model.Autor;
 import io.github.daviaarrudaofc.libaryAPI.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +28,22 @@ public class AutorController {
     //ResponseEntity, ele representa todos os dados que se pode retornar da Resposta!
     @PostMapping
     public ResponseEntity<Object> salvar(@RequestBody AutorDTO autor){
-        var autorEntidade = autor.mapearParaAutor();
-        autorService.salvar(autorEntidade);
+        try {
+            var autorEntidade = autor.mapearParaAutor();
+            autorService.salvar(autorEntidade);
 
-        // http://host:8080/autores/ewiebweib(id)
+            // http://host:8080/autores/ewiebweib(id)
             URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(autorEntidade.getId())
-                .toUri();
+                    .fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(autorEntidade.getId())
+                    .toUri();
 
-        return ResponseEntity.created(location).build();
-
+            return ResponseEntity.created(location).build();
+        }catch (RegistroDuplicadoException e){
+            var erroDTO = ErroResposta.conflito(e.getMessage());
+            return  ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
     }
 
     @GetMapping("{id}")
@@ -57,14 +64,21 @@ public class AutorController {
 
     // indempotente
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletar(@PathVariable("id") String id){
-        var idAutor = UUID.fromString(id);
-        Optional<Autor> autorOptional = autorService.obterPorID(idAutor);
-        if(autorOptional.isEmpty()){
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Object> deletar(@PathVariable("id") String id){
+        try {
+
+
+            var idAutor = UUID.fromString(id);
+            Optional<Autor> autorOptional = autorService.obterPorID(idAutor);
+            if (autorOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            autorService.deletar(autorOptional.get());
+            return ResponseEntity.noContent().build();
+        }catch (OperacaoNaoPermitidaException e){
+            var erroResposta = ErroResposta.respostaPadrao(e.getMessage());
+           return ResponseEntity.status(erroResposta.status()).body(erroResposta);
         }
-        autorService.deletar(autorOptional.get());
-        return  ResponseEntity.noContent().build();
     }
 
     @GetMapping
@@ -81,6 +95,32 @@ public class AutorController {
                         autor.getNacionalidade())
                 ).collect(Collectors.toList());
         return ResponseEntity.ok(lista);
+
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Object> atualizar(
+            @PathVariable("id") String id, @RequestBody AutorDTO dto){
+        try {
+
+
+            var idAutor = UUID.fromString(id);
+            Optional<Autor> autorOptional = autorService.obterPorID(idAutor);
+            if (autorOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            var autorDto = autorOptional.get();
+            autorDto.setNome(dto.nome());
+            autorDto.setNacionalidade(dto.nacionalidade());
+            autorDto.setDataNascimento(dto.dataNascimento());
+            autorService.atualizar(autorDto);
+
+            return ResponseEntity.noContent().build();
+        }catch (RegistroDuplicadoException e){
+            var erroDTO = ErroResposta.conflito(e.getMessage());
+            return  ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
 
     }
 
