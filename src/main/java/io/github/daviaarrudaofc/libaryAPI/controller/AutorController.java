@@ -103,7 +103,7 @@ public class AutorController {
 
     @PutMapping("{id}")
     public ResponseEntity<Object> atualizar(
-            @PathVariable("id") String id, @RequestBody AutorDTO dto){
+            @PathVariable("id") String id,  @Valid @RequestBody AutorDTO dto){
         try {
 
 
