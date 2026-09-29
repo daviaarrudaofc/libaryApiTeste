@@ -3,15 +3,20 @@ package io.github.daviaarrudaofc.libaryAPI.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data// composta por tudo isso: o getter,setter,toString,EqualsAndHashCode,RequiredArgsConstructor
 @Entity
 @ToString(exclude = "autor") // n quer que imprima no toString o id_autor
 @Table(name = "livro")
+@EntityListeners(AuditingEntityListener.class)
 public class Livro {
 
     @Id
@@ -42,5 +47,18 @@ public class Livro {
     )
     @JoinColumn(name = "id_autor")
     private Autor autor;
+
+
+    @CreatedDate// Preenche automaticamente quando o registro é criado
+    @Column(name = "data_cadastro")
+    private LocalDateTime dataCadastro;
+
+    @LastModifiedDate// Atualiza automaticamente sempre que o registro for alterado
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+
+    @Column(name = "id_usuario")
+    private UUID id_usuario;
+
 
 }
