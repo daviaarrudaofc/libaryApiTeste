@@ -2,6 +2,7 @@ package io.github.daviaarrudaofc.libaryAPI.controller;
 
 import io.github.daviaarrudaofc.libaryAPI.controller.dto.AutorDTO;
 import io.github.daviaarrudaofc.libaryAPI.controller.dto.ErroResposta;
+import io.github.daviaarrudaofc.libaryAPI.controller.mappers.AutorMapper;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.OperacaoNaoPermitidaException;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.RegistroDuplicadoException;
 import io.github.daviaarrudaofc.libaryAPI.model.Autor;
@@ -25,21 +26,24 @@ import java.util.stream.Collectors;
 //  http://host:8080/autores
 public class AutorController {
 
+    private final AutorMapper autorMapper;
+
     @Autowired
     AutorService autorService;
 
     //ResponseEntity, ele representa todos os dados que se pode retornar da Resposta!
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autor){
+    public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autorDTO){
         try {
-            var autorEntidade = autor.mapearParaAutor();
-            autorService.salvar(autorEntidade);
+
+            Autor autor = autorMapper.toEntity(autorDTO);
+            autorService.salvar(autor);
 
             // http://host:8080/autores/ewiebweib(id)
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(autorEntidade.getId())
+                    .buildAndExpand(autor.getId())
                     .toUri();
 
             return ResponseEntity.created(location).build();
@@ -53,16 +57,24 @@ public class AutorController {
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id){
         var idAutor = UUID.fromString(id);
         Optional<Autor> autorOptional = autorService.obterPorID(idAutor);
-        if(autorOptional.isPresent()){
-            Autor autor = autorOptional.get();
-            AutorDTO dto = new AutorDTO(
-                    autor.getId(),
-                    autor.getNome(),
-                    autor.getDataNascimento(),
-                    autor.getNacionalidade());
-            return ResponseEntity.ok(dto);// n precisa do body
-        }
-        return ResponseEntity.notFound().build();
+
+        return autorService
+                .obterPorID(idAutor)
+                .map(autor -> {
+                    AutorDTO dto = autorMapper.toDTO(autor);
+                    return ResponseEntity.ok(dto);
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+
+//        if(autorOptional.isPresent()){
+//            Autor autor = autorOptional.get();
+//            AutorDTO dto = autorMapper.toDTO(autor); //new AutorDTO(
+//                    //autor.getId(),
+//                    //autor.getNome(),
+//                    //autor.getDataNascimento(),
+//                    //autor.getNacionalidade());
+//            return ResponseEntity.ok(dto);// n precisa do body
+//        }
+//        return ResponseEntity.notFound().build();
     }
 
     // indempotente
@@ -91,14 +103,18 @@ public class AutorController {
         List<Autor> resultado = autorService.pesquisaByExample(nome, nacionalidade);
         List<AutorDTO> lista = resultado
                 .stream()
-                .map(autor -> new AutorDTO(
-                        autor.getId(),
-                        autor.getNome(),
-                        autor.getDataNascimento(),
-                        autor.getNacionalidade())
+                .map(autorMapper::toDTO
                 ).collect(Collectors.toList());
         return ResponseEntity.ok(lista);
 
+                // versao antiga
+//                .map(autor -> new AutorDTO(
+//                        autor.getId(),
+//                        autor.getNome(),
+//                        autor.getDataNascimento(),
+//                        autor.getNacionalidade())
+//                ).collect(Collectors.toList());
+        //  return ResponseEntity.ok(lista);
     }
 
     @PutMapping("{id}")
