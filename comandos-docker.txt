@@ -1,15 +1,122 @@
-Check port:
+# ========================================
+# POSTGRESQL + PGADMIN COM DOCKER
+# ========================================
+
+
+# 1. Verificar se a porta 5432 está sendo usada
 netstat -aon | findstr :5432
 
-#Create Network
+
+# 2. CASO O COMPUTADOR TENHA REINICIADO
+# O PostgreSQL instalado no Windows pode iniciar automaticamente
+# e ocupar a porta 5432 antes do Docker.
+
+# Verificar o serviço do PostgreSQL no Windows
+Get-Service *postgres*
+
+# Exemplo de serviço encontrado:
+# postgresql-x64-18
+
+# Parar o serviço para liberar a porta 5432
+Stop-Service postgresql-x64-18
+
+# IMPORTANTE:
+# O nome pode ser diferente dependendo da versão instalada.
+# Sempre use primeiro:
+# Get-Service *postgres*
+# e depois coloque o nome correto no Stop-Service.
+
+
+# 3. Confirmar se a porta 5432 ficou livre
+netstat -aon | findstr :5432
+
+# Se não retornar nada, significa que a porta está livre.
+
+
+# ========================================
+# PRIMEIRA CONFIGURAÇÃO
+# ========================================
+
+# Criar Network
 docker network create libary-network
 
- #Rodar Container Postgre na versão 18.6
- docker run --name libarydb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=libary -d --network libary-network postgres:18.6
 
- #Rodar Pgadmin4
- docker run --name pgadmin4 -p 15432:80 -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=admin -d --network libary-network dpage/pgadmin4
- # o -d roda em background, que é pode fechar o cmd, que ele não vai para de rodar
+# Rodar Container PostgreSQL na versão 18.6
+docker run --name libarydb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=libary -d --network libary-network postgres:18.6
 
- #Sempre verificar senao tiver, antes algum postgre que vc tenha usado anteriormente,pois isso pode dar erro e tb na questao da porta dele
- # ai pare esse servico para usar esta porta ;)
+
+# Rodar PgAdmin4
+docker run --name pgadmin4 -p 15432:80 -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=admin -d --network libary-network dpage/pgadmin4
+
+# O -d roda em background.
+# Pode fechar o CMD/PowerShell que o container continua rodando.
+
+
+# ========================================
+# DEPOIS QUE OS CONTAINERS JÁ EXISTEM
+# ========================================
+
+# NÃO usar docker run novamente.
+# Apenas iniciar os containers existentes:
+
+docker start libarydb
+docker start pgadmin4
+
+
+# Verificar se estão rodando
+docker ps
+
+
+# Para ver containers rodando e parados
+docker ps -a
+
+
+# ========================================
+# APÓS REINICIAR O COMPUTADOR
+# ========================================
+
+# 1. Verifique se a porta 5432 está ocupada
+netstat -aon | findstr :5432
+
+# 2. Se estiver ocupada pelo PostgreSQL do Windows:
+Get-Service *postgres*
+
+# 3. Pare o serviço
+Stop-Service postgresql-x64-18
+
+# 4. Confirme que a porta ficou livre
+netstat -aon | findstr :5432
+
+# 5. Inicie os containers que já existem
+docker start libarydb
+docker start pgadmin4
+
+# 6. Confira
+docker ps
+
+
+# ========================================
+# OBSERVAÇÃO IMPORTANTE
+# ========================================
+
+# Sempre verificar se existe algum PostgreSQL instalado diretamente
+# no Windows utilizando a porta 5432.
+#
+# Depois de reiniciar o computador, esse serviço pode iniciar
+# automaticamente e ocupar a porta 5432.
+#
+# Nesse caso, o container libarydb NÃO conseguirá iniciar porque
+# haverá conflito de porta:
+#
+# PostgreSQL Windows -> 5432
+# Docker libarydb    -> 5432
+#
+# Portanto:
+#
+# Get-Service *postgres*
+# Stop-Service NOME_DO_SERVICO
+#
+# Depois iniciar:
+#
+# docker start libarydb
+# docker start pgadmin4

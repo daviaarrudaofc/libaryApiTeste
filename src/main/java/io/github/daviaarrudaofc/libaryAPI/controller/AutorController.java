@@ -36,6 +36,9 @@ public class AutorController {
     public ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autorDTO){
         try {
 
+            //antes
+            //       var autorEntidade = autor.mapearParaAutor();
+            //    autorService.salvar(autorEntidade);
             Autor autor = autorMapper.toEntity(autorDTO);
             autorService.salvar(autor);
 
