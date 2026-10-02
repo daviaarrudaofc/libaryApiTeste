@@ -5,6 +5,7 @@ import io.github.daviaarrudaofc.libaryAPI.controller.dto.ErroResposta;
 import io.github.daviaarrudaofc.libaryAPI.controller.dto.ResultadoPesquisaLivroDTO;
 import io.github.daviaarrudaofc.libaryAPI.controller.mappers.LivroMapper;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.RegistroDuplicadoException;
+import io.github.daviaarrudaofc.libaryAPI.model.GeneroLivro;
 import io.github.daviaarrudaofc.libaryAPI.model.Livro;
 import io.github.daviaarrudaofc.libaryAPI.service.LivroService;
 import jakarta.validation.Valid;
@@ -12,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("livros")
@@ -51,5 +54,27 @@ public class LivroController implements GenericController{
                     livroService.deletar(livro);
                     return ResponseEntity.noContent().build();
                 }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResultadoPesquisaLivroDTO>> pesquisa(
+            @RequestParam(value = "isbn", required = false)
+            String isbn,
+            @RequestParam(value = "titulo", required = false)
+            String titulo,
+            @RequestParam(value = "nome-autor", required = false)
+            String nomeAutor,
+            @RequestParam(value = "genero", required = false)
+            GeneroLivro genero,
+            @RequestParam(value = "ano-publicacao", required = false)
+            Integer anoPublicacao
+    ){
+        var resultado = livroService.pesquisa(isbn, titulo, nomeAutor, genero, anoPublicacao);
+        var lista = resultado
+                .stream()
+                .map(livroMapper::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(lista);
+
     }
 }
