@@ -4,6 +4,7 @@ import io.github.daviaarrudaofc.libaryAPI.model.GeneroLivro;
 import io.github.daviaarrudaofc.libaryAPI.model.Livro;
 import io.github.daviaarrudaofc.libaryAPI.repository.LivroRepository;
 import io.github.daviaarrudaofc.libaryAPI.repository.specs.LivroSpecs;
+import io.github.daviaarrudaofc.libaryAPI.validator.LivroValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LivroService {
     private final LivroRepository  livroRepository;
+    private LivroValidator livroValidator;
 
     public Livro salvar(Livro livro) {
-         return livroRepository.save(livro);
+         livroValidator.validar(livro);
+        return livroRepository.save(livro);
     }
 
     public Optional<Livro> obterPorId(UUID id){
@@ -61,5 +64,13 @@ public class LivroService {
         return livroRepository.findAll(specs);
 
 
+    }
+
+    public void atualizar(Livro livro) {
+        if(livro.getId() == null){
+            throw new IllegalArgumentException("Para Atualizar, é necessário que o Livro esteja salvo na base");
+        }
+        livroValidator.validar(livro);
+        livroRepository.save(livro);
     }
 }

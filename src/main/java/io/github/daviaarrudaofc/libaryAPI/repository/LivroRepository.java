@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 /**
  * @see LivroRepositoryTest
@@ -25,7 +26,7 @@ public interface LivroRepository extends JpaRepository<Livro, UUID>, JpaSpecific
     //select * from livro where titulo = titulo_passado_parametro
     List<Livro> findByTitulo(String titulo);
     // fiz aq por objeto porque pode ser unico o isbn e nao varios: Livro findByIsbn(String isbn);
-    List<Livro> findByIsbn(String isbn);
+    Optional<Livro> findByIsbn(String isbn);
 
     List<Livro> findByTituloAndPreco(String titulo, BigDecimal preco);
 
