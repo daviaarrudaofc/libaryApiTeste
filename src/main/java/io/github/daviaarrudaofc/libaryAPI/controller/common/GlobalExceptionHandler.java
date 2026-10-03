@@ -2,6 +2,7 @@ package io.github.daviaarrudaofc.libaryAPI.controller.common;
 
 import io.github.daviaarrudaofc.libaryAPI.controller.dto.ErroCampo;
 import io.github.daviaarrudaofc.libaryAPI.controller.dto.ErroResposta;
+import io.github.daviaarrudaofc.libaryAPI.exceptions.CampoInvalidoException;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.OperacaoNaoPermitidaException;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.RegistroDuplicadoException;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,15 @@ public class GlobalExceptionHandler {
     public ErroResposta handleOperacaoNaoPermitidaException(OperacaoNaoPermitidaException e){
         return  ErroResposta.respostaPadrao(e.getMessage());
     }
+
+    @ExceptionHandler(CampoInvalidoException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
+    public ErroResposta handleCampoInvalidoException(CampoInvalidoException e){
+        return new ErroResposta(HttpStatus.UNPROCESSABLE_CONTENT.value(),
+                "Erro de digitação",
+                List.of(new ErroCampo(e.getCampo(), e.getMessage())));
+    }
+
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
