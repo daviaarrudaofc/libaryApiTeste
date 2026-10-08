@@ -6,10 +6,13 @@ import io.github.daviaarrudaofc.libaryAPI.repository.LivroRepository;
 import io.github.daviaarrudaofc.libaryAPI.repository.specs.LivroSpecs;
 import io.github.daviaarrudaofc.libaryAPI.validator.LivroValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import static io.github.daviaarrudaofc.libaryAPI.repository.specs.LivroSpecs.*;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LivroService {
     private final LivroRepository  livroRepository;
-    private LivroValidator livroValidator;
+    private final LivroValidator livroValidator;
 
     public Livro salvar(Livro livro) {
          livroValidator.validar(livro);
@@ -34,7 +37,13 @@ public class LivroService {
     }
 
     //isbn,titulo, nome autor, genero, ano publicacao
-    public List<Livro> pesquisa(String isbn,String titulo, String nomeAutor, GeneroLivro genero, Integer anoPublicacao){
+    public Page<Livro> pesquisa(String isbn,
+                                String titulo,
+                                String nomeAutor,
+                                GeneroLivro genero,
+                                Integer anoPublicacao,
+                                Integer pagina,
+                                Integer tamanhoPagina){
 
         //select * from livro where isbn = :isbn and nomeAutor = :
 //        Specification<Livro> specs = Specification
@@ -59,9 +68,11 @@ public class LivroService {
             specs= specs.and(nomeAutorLike(nomeAutor));
         }
 
+        Pageable pageRequest = PageRequest.of(pagina,tamanhoPagina);
 
 
-        return livroRepository.findAll(specs);
+
+        return livroRepository.findAll(specs,pageRequest);
 
 
     }

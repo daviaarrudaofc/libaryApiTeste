@@ -12,7 +12,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class LivroValidator {
-    private LivroRepository livroRepository;
+    private final LivroRepository livroRepository;
 
     private static final int ANO_EXIGENCIA_PRECO = 2020;
 
