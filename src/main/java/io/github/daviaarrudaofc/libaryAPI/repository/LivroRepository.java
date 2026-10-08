@@ -23,8 +23,10 @@ public interface LivroRepository extends JpaRepository<Livro, UUID>, JpaSpecific
     //QUERY METHOD
     //select * from livro where id_autor = id
     List<Livro> findByAutor(Autor autor);
+    
     //select * from livro where titulo = titulo_passado_parametro
     List<Livro> findByTitulo(String titulo);
+
     // fiz aq por objeto porque pode ser unico o isbn e nao varios: Livro findByIsbn(String isbn);
     Optional<Livro> findByIsbn(String isbn);
 

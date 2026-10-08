@@ -31,17 +31,24 @@ public class LivroValidator {
                 livro.getDataPublicacao().getYear() >= ANO_EXIGENCIA_PRECO;
     }
 
-    private boolean existeLivroComIsbn(Livro livro){
+    private boolean existeLivroComIsbn(Livro livro) {
+        // Pega o ISBN do livro recebido como parâmetro e busca no banco
+        // um livro com esse mesmo ISBN. Se encontrar, guarda o livro no Optional.
         Optional<Livro> livroEncontrado = livroRepository.findByIsbn(livro.getIsbn());
 
-        if(livro.getId() == null){
+        if (livro.getId() == null) { // O livro recebido está sem ID: cadastro novo.
+            // A busca encontrou um livro com esse ISBN?
+            // true: já existe no banco e estou tentando cadastrar outro com o mesmo ISBN.
+            // false: não encontrou, então não há duplicidade.
+            // O return encerra este método e devolve o resultado ao validar().
             return livroEncontrado.isPresent();
         }
 
+        // Só chega aqui se o livro recebido tem ID: atualização.
+        // Verifica se o ISBN encontrado pertence a outro livro, não ao próprio.
         return livroEncontrado
                 .map(Livro::getId)
                 .stream()
                 .anyMatch(id -> !id.equals(livro.getId()));
-
     }
 }
