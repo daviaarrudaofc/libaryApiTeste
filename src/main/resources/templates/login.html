@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-BR" xmlns: th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Entrar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous">
+    <style>
+        :root {
+            --ink: #202723;
+            --muted: #727b75;
+            --green: #245d47;
+            --green-dark: #194332;
+            --line: #dde3de;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: #fff;
+            font-family: "Manrope", system-ui, sans-serif;
+            font-size: 15px;
+            letter-spacing: 0;
+        }
+
+        .login-layout { min-height: 100svh; }
+
+        .library-panel {
+            position: relative;
+            min-height: 100svh;
+            background: #e6e9e5;
+            overflow: hidden;
+        }
+
+        .library-photo {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 48% center;
+        }
+
+        .photo-caption {
+            position: absolute;
+            right: 24px;
+            bottom: 24px;
+            left: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 6px;
+            background: #fff;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .caption-mark { display: flex; align-items: center; gap: 9px; }
+        .caption-mark svg { width: 17px; height: 17px; color: var(--green); }
+
+        .form-panel {
+            display: flex;
+            min-height: 100svh;
+            flex-direction: column;
+            padding: 34px 48px 24px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            width: fit-content;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            place-items: center;
+            border-radius: 6px;
+            background: var(--green);
+            color: #fff;
+        }
+
+        .brand-icon svg { width: 23px; height: 23px; }
+        .brand span:last-child { color: var(--green); }
+
+        .form-content {
+            width: 100%;
+            max-width: 390px;
+            margin: auto;
+            padding: 60px 0;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .section-label svg { width: 16px; height: 16px; }
+        h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.2; font-weight: 800; }
+        .welcome { margin-bottom: 32px; color: var(--muted); line-height: 1.7; }
+        .form-label { margin-bottom: 9px; font-size: 13px; font-weight: 700; }
+        .field-group { margin-bottom: 23px; }
+        .input-wrap { position: relative; }
+
+        .field-icon {
+            position: absolute;
+            top: 17px;
+            left: 15px;
+            width: 18px;
+            height: 18px;
+            color: #818b84;
+            pointer-events: none;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 54px;
+            padding: 13px 15px 13px 44px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: #fafcfb;
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 150ms, box-shadow 150ms;
+        }
+
+        .form-control::placeholder { color: #939b96; opacity: 1; }
+        .form-control:focus { border-color: var(--green); background: #fff; box-shadow: 0 0 0 3px #245d471a; }
+        .password-input { padding-right: 54px; }
+
+        .password-toggle {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: grid;
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            place-items: center;
+            border: 0;
+            border-radius: 4px;
+            background: transparent;
+            color: #778179;
+        }
+
+        .password-toggle:hover { background: #edf2ee; color: var(--green); }
+        .password-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+        .password-toggle svg { width: 19px; height: 19px; }
+        .caps-lock { margin-top: 8px; color: #8b651d; font-size: 12px; }
+
+        .submit-button {
+            display: flex;
+            width: 100%;
+            min-height: 54px;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 13px 20px;
+            border: 1px solid var(--green);
+            border-radius: 6px;
+            background: var(--green);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            transition: background 150ms, box-shadow 150ms;
+        }
+
+        .submit-button:hover { border-color: var(--green-dark); background: var(--green-dark); color: #fff; }
+        .submit-button:focus-visible { outline: 3px solid #a8cbb9; outline-offset: 3px; }
+        .submit-button svg { width: 18px; height: 18px; }
+        [hidden] { display: none !important; }
+
+        .access-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin: 22px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .access-note svg { width: 14px; height: 14px; }
+        .panel-footer { display: flex; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 11px; }
+
+        @media (min-width: 992px) {
+            .library-panel { width: 44%; }
+            .form-panel { width: 56%; }
+        }
+
+        @media (max-width: 991.98px) {
+            .library-panel { display: none; }
+            .form-panel { padding: 30px 28px 24px; }
+            .form-content { max-width: 420px; }
+        }
+
+        @media (max-width: 374.98px) {
+            .form-panel { padding-right: 20px; padding-left: 20px; }
+            h1 { font-size: 30px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition: none !important; animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+<main class="container-fluid p-0">
+    <div class="row g-0 login-layout">
+        <aside class="col-lg-5 library-panel" aria-label="Biblioteca">
+            <img class="library-photo"
+                 src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&amp;fit=crop&amp;w=1600&amp;q=85"
+                 alt="Estantes de livros em uma biblioteca com corredores iluminados"
+                 fetchpriority="high">
+            <div class="photo-caption" aria-hidden="true">
+                <span class="caption-mark"><i data-lucide="book-open"></i> Seu espa&ccedil;o. Seu ritmo.</span>
+            </div>
+        </aside>
+
+        <section class="col-12 col-lg-7 form-panel" aria-labelledby="login-title">
+            <header class="brand">
+                <span class="brand-icon" aria-hidden="true"><i data-lucide="user-round"></i></span>
+                <span>Minha conta</span>
+            </header>
+
+            <div class="form-content">
+                <div class="section-label"><i data-lucide="key-round" aria-hidden="true"></i> SEU ACESSO</div>
+                <h1 id="login-title">Bem-vindo de volta.</h1>
+                <p class="welcome">Um bom lugar para continuar.</p>
+
+                <form method="post" th:action="@{/login}">
+                    <div class="field-group">
+                        <label for="username" class="form-label">Usu&aacute;rio</label>
+                        <div class="input-wrap">
+                            <i data-lucide="user-round" class="field-icon" aria-hidden="true"></i>
+                            <input class="form-control" id="username" name="username" type="text"
+                                   placeholder="Seu usu&aacute;rio" autocomplete="username" autocapitalize="none"
+                                   spellcheck="false" required>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="password" class="form-label">Senha</label>
+                        <div class="input-wrap">
+                            <i data-lucide="lock-keyhole" class="field-icon" aria-hidden="true"></i>
+                            <input class="form-control password-input" id="password" name="password" type="password"
+                                   placeholder="Sua senha" autocomplete="current-password"
+                                   aria-describedby="caps-lock" required>
+                            <button id="password-toggle" class="password-toggle" type="button"
+                                    aria-label="Mostrar senha" aria-controls="password" aria-pressed="false"
+                                    title="Mostrar senha">
+                                <i data-lucide="eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="caps-lock" class="caps-lock" role="status" hidden>Caps Lock ativado.</div>
+                    </div>
+
+                    <button class="btn submit-button" type="submit">
+                        <span>Entrar</span>
+                        <i data-lucide="arrow-right" aria-hidden="true"></i>
+                    </button>
+                </form>
+
+                <p class="access-note"><i data-lucide="shield-check" aria-hidden="true"></i> Acesso restrito &agrave; sua conta</p>
+            </div>
+
+            <footer class="panel-footer">
+                <span>&copy; <span id="current-year">2026</span></span>
+                <span>Um novo come&ccedil;o.</span>
+            </footer>
+        </section>
+    </div>
+</main>
+
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script>
+    const password = document.getElementById('password');
+    const toggle = document.getElementById('password-toggle');
+    const capsLock = document.getElementById('caps-lock');
+
+    function renderIcons() {
+        if (window.lucide) window.lucide.createIcons();
+    }
+
+    renderIcons();
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    toggle.addEventListener('click', () => {
+        const visible = password.type === 'password';
+        password.type = visible ? 'text' : 'password';
+        toggle.setAttribute('aria-pressed', String(visible));
+        toggle.setAttribute('aria-label', visible ? 'Ocultar senha' : 'Mostrar senha');
+        toggle.title = visible ? 'Ocultar senha' : 'Mostrar senha';
+        toggle.innerHTML = visible ? '<i data-lucide="eye-off" aria-hidden="true"></i>' : '<i data-lucide="eye" aria-hidden="true"></i>';
+        renderIcons();
+    });
+
+    password.addEventListener('keyup', (event) => {
+        capsLock.hidden = !event.getModifierState('CapsLock');
+    });
+    password.addEventListener('blur', () => { capsLock.hidden = true; });
+
+</script>
+</body>
+</html>
