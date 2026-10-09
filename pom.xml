@@ -48,6 +48,12 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.hypersistence</groupId>
+			<artifactId>hypersistence-utils-hibernate-73</artifactId>
+			<version>3.16.0</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
