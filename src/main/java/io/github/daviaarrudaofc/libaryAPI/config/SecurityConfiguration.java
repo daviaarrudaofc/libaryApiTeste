@@ -23,20 +23,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
                 .formLogin(configurer ->{
                     configurer.loginPage("/login");
                             //.permitAll();
                 })
-                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
-                    //DEMONSTRAÇÃO
-                    authorize.requestMatchers("/login").permitAll();
-//                    authorize.requestMatchers(HttpMethod.POST, "/autores/**").hasAuthority("CADASTRAR_AUTOR");
-//                    authorize.requestMatchers(HttpMethod.DELETE, "/autores/**").hasRole("ADMIN");
-//                    authorize.requestMatchers(HttpMethod.PUT, "/autores/**").hasRole("ADMIN");
-//                    authorize.requestMatchers(HttpMethod.GET, "/autores/**").hasAnyRole("ADMIN", "USER");
-
                     authorize.requestMatchers("/login/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll();
                     authorize.requestMatchers("/autores/**").hasRole("ADMIN");
                     authorize.requestMatchers("/livros/**").hasAnyRole("USER", "ADMIN");
 
