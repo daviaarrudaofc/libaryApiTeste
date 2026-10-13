@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,6 +34,7 @@ public class AutorController implements GenericController {
 
     //ResponseEntity, ele representa todos os dados que se pode retornar da Resposta!
     @PostMapping
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<Void> salvar(@RequestBody @Valid AutorDTO autorDTO){
         //antes
         //       var autorEntidade = autor.mapearParaAutor();
@@ -47,6 +49,8 @@ public class AutorController implements GenericController {
 
     }
 
+
+    @PreAuthorize("hasAnyRole('GERENTE','OPERADOR')")
     @GetMapping("{id}")
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id){
         var idAutor = UUID.fromString(id);
@@ -72,6 +76,7 @@ public class AutorController implements GenericController {
     }
 
     // indempotente
+    @PreAuthorize("hasRole('GERENTE')")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deletar(@PathVariable("id") String id){
         var idAutor = UUID.fromString(id);
@@ -84,6 +89,7 @@ public class AutorController implements GenericController {
 
     }
 
+    @PreAuthorize("hasAnyRole('GERENTE','OPERADOR')")
     @GetMapping
     public ResponseEntity<List<AutorDTO>> pesquisar(
             @RequestParam(value = "nome", required = false) String nome,
@@ -105,6 +111,7 @@ public class AutorController implements GenericController {
         //  return ResponseEntity.ok(lista);
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @PutMapping("{id}")
     public ResponseEntity<Void> atualizar(
             @PathVariable("id") String id,  @Valid @RequestBody AutorDTO dto){
