@@ -2,8 +2,10 @@ package io.github.daviaarrudaofc.libaryAPI.service;
 
 import io.github.daviaarrudaofc.libaryAPI.exceptions.OperacaoNaoPermitidaException;
 import io.github.daviaarrudaofc.libaryAPI.model.Autor;
+import io.github.daviaarrudaofc.libaryAPI.model.Usuario;
 import io.github.daviaarrudaofc.libaryAPI.repository.AutorRepository;
 import io.github.daviaarrudaofc.libaryAPI.repository.LivroRepository;
+import io.github.daviaarrudaofc.libaryAPI.security.SecurityService;
 import io.github.daviaarrudaofc.libaryAPI.validator.AutorValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AutorService {
 
+    private  final SecurityService securityService;
     @Autowired
     LivroRepository livroRepository;
     @Autowired
@@ -28,6 +31,8 @@ public class AutorService {
 
     public Autor salvar(Autor autor){
         autorValidator.validar(autor);
+        Usuario usuario = securityService.obterUsuarioLogado();
+        autor.setUsuario(usuario);
         return  autorRepository.save(autor);
     }
 

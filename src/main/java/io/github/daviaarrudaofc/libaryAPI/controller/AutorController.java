@@ -6,12 +6,17 @@ import io.github.daviaarrudaofc.libaryAPI.controller.mappers.AutorMapper;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.OperacaoNaoPermitidaException;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.RegistroDuplicadoException;
 import io.github.daviaarrudaofc.libaryAPI.model.Autor;
+import io.github.daviaarrudaofc.libaryAPI.model.Usuario;
+import io.github.daviaarrudaofc.libaryAPI.security.SecurityService;
 import io.github.daviaarrudaofc.libaryAPI.service.AutorService;
+import io.github.daviaarrudaofc.libaryAPI.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -39,6 +44,10 @@ public class AutorController implements GenericController {
         //antes
         //       var autorEntidade = autor.mapearParaAutor();
         //    autorService.salvar(autorEntidade);
+
+        //UserDetails usuarioLogado = (UserDetails) authentication.getPrincipal(); --antes
+        //Usuario usuario = usuarioService.obterPorLogin(usuarioLogado.getUsername());
+
         Autor autor = autorMapper.toEntity(autorDTO);
         autorService.salvar(autor);
 

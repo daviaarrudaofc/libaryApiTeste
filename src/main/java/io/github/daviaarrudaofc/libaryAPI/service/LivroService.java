@@ -2,8 +2,10 @@ package io.github.daviaarrudaofc.libaryAPI.service;
 
 import io.github.daviaarrudaofc.libaryAPI.model.GeneroLivro;
 import io.github.daviaarrudaofc.libaryAPI.model.Livro;
+import io.github.daviaarrudaofc.libaryAPI.model.Usuario;
 import io.github.daviaarrudaofc.libaryAPI.repository.LivroRepository;
 import io.github.daviaarrudaofc.libaryAPI.repository.specs.LivroSpecs;
+import io.github.daviaarrudaofc.libaryAPI.security.SecurityService;
 import io.github.daviaarrudaofc.libaryAPI.validator.LivroValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,9 +24,12 @@ import java.util.UUID;
 public class LivroService {
     private final LivroRepository  livroRepository;
     private final LivroValidator livroValidator;
+    private final SecurityService securityService;
 
     public Livro salvar(Livro livro) {
          livroValidator.validar(livro);
+        Usuario usuario = securityService.obterUsuarioLogado();
+        livro.setUsuario(usuario);
         return livroRepository.save(livro);
     }
 
