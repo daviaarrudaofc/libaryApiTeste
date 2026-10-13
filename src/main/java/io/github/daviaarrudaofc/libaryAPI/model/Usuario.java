@@ -23,7 +23,7 @@ public class Usuario {
     @Column
     private String senha;
 
-    @Type(ListArrayType.class)
+    @Type(ListArrayType.class)// é como se fosse o tradutor: ele vai traduzir roles para este tipo
     @Column(name = "roles", columnDefinition = "varchar[]")
     private List<String> roles;
 
