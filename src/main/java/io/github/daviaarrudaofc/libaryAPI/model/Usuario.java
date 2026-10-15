@@ -23,6 +23,10 @@ public class Usuario {
     @Column
     private String senha;
 
+    //toda vez que se insere um novo atributo em Entidades e DTOs é nece um clean e install
+    @Column
+    private String email;
+
     @Type(ListArrayType.class)// é como se fosse o tradutor: ele vai traduzir roles para este tipo
     @Column(name = "roles", columnDefinition = "varchar[]")
     private List<String> roles;
