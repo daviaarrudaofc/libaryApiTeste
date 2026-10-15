@@ -16,8 +16,15 @@ public class SecurityService {
 
     public Usuario obterUsuarioLogado(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String login = userDetails.getUsername();
-        return usuarioService.obterPorLogin(login);
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        String login = userDetails.getUsername();
+//        return usuarioService.obterPorLogin(login);
+        // faz a propia authetication no CustomAuthentication, agr nao é necessario mais fazer essa "mini  autenticação
+        // dentro do Security Service, pois tb nao era nem sua responsabilidade fazer isto
+
+        if(authentication instanceof CustomAuthentication customAuthentication){
+            return customAuthentication.getUsuario();
+        }
+        return null;
     }
 }
