@@ -21,7 +21,7 @@ public class LoginViewController {
             // a partir de login por google no OAuth2
             System.out.println(customAuthentication.getUsuario());
         }
-        return "óla" + authentication.getName();
+        return "óla " + authentication.getName();
 
     }
 }
