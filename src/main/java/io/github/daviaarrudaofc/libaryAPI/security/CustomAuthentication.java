@@ -23,7 +23,7 @@ public class CustomAuthentication implements Authentication {
         return this.usuario
                 .getRoles() //POIS COMO NOS ESTAMOS CUSTOMIZANDO DO NOSSO JEITO,o Spring tem um prefixo ja pre definido como ROLES_ ...
                 .stream()
-                //.map(role -> new SimpleGrantedAuthority(role)) //new SimpleGrantedAuthority("ROLE_" + role))
+                //.map(role -> new SimpleGrantedAuthority(role)) //new SimpleGrantedAuthority("ROLE_" + role)) --antes
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
