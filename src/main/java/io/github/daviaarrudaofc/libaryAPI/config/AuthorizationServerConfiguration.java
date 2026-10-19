@@ -23,21 +23,22 @@ import java.time.Duration;
 public class AuthorizationServerConfiguration {
 
     @Bean
-    @Order(1)
+    @Order(1)// Esta cadeia é analisada antes da cadeia geral.
     public SecurityFilterChain authServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .oauth2AuthorizationServer(authorizationServer -> {
-                    http.securityMatcher(authorizationServer.getEndpointsMatcher());
-                    authorizationServer.oidc(Customizer.withDefaults());
-                })
-                .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(Customizer.withDefaults())
-                );
+        http.oauth2AuthorizationServer(authorizationServer -> { // Configura o Authorization Server.
+            http.securityMatcher(authorizationServer.getEndpointsMatcher()); // Aplica esta cadeia só aos endpoints dele.
+            authorizationServer.oidc(Customizer.withDefaults()); // Habilita os recursos de identidade do OIDC.
+        });
 
-        return http.build();
+        http.authorizeHttpRequests(authorize -> // Define as regras de acesso desta cadeia.
+                authorize.anyRequest().authenticated()); // Exige autenticação nas requisições que chegaram a ela.
+
+        http.oauth2ResourceServer(resourceServer -> // Configura o recebimento de tokens nesta cadeia.
+                resourceServer.jwt(Customizer.withDefaults())); // Valida os JWTs recebidos.
+
+        http.formLogin(form -> form.loginPage("/login")); // Indica a página de login quando ela for necessária.
+
+        return http.build(); // Monta e devolve esta cadeia de segurança.
     }
 
     @Bean
