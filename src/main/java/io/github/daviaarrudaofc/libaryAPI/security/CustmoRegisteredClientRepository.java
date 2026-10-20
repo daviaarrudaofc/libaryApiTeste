@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustmoRegisteredClientRepository implements RegisteredClientRepository {
 
-    private ClientService clientService;
+    private final ClientService clientService;
     private final TokenSettings tokenSettings;
     private final ClientSettings clientSettings;
 
