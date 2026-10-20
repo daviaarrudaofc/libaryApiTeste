@@ -1,5 +1,10 @@
 package io.github.daviaarrudaofc.libaryAPI.config;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import io.github.daviaarrudaofc.libaryAPI.model.Client;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +16,18 @@ import org.springframework.security.config.annotation.web.configuration.OAuth2Au
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
@@ -59,5 +70,38 @@ public class AuthorizationServerConfiguration {
         return ClientSettings.builder()
                 .requireAuthorizationConsent(false)// n trabalha com janelinha de consentimento,que nao vai autorizar as info
                 .build();
+    }
+    //JWK - Json Web Key
+    // Disponibiliza ao Authorization Server a chave usada para assinar tokens.
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() throws Exception{
+        RSAKey rsaKey = gerarChaveRSA();
+
+        JWKSet jwkSet = new JWKSet();// Inclui a chave gerada no conjunto
+        return new ImmutableJWKSet<>(jwkSet);// Entrega esse conjunto ao Spring.
+    }
+
+    //Gerar par de chaves RSA
+    // Cria um par: chave privada para assinar; pública para verificar a assinatura.
+    private RSAKey gerarChaveRSA() throws Exception{
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+        RSAPublicKey chavePublica = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey chavePrivada = (RSAPrivateKey) keyPair.getPrivate();
+
+        return new RSAKey
+                .Builder(chavePublica)
+                .privateKey(chavePrivada)
+                .keyID(UUID.randomUUID().toString())// Identifica qual chave assinou o token
+                .build()
+                ;
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource){
+        // Usa as chaves disponíveis para decodificar e verificar JWTs recebidos.
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
 }
