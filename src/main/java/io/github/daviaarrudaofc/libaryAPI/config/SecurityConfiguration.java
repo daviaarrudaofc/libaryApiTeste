@@ -1,6 +1,7 @@
 package io.github.daviaarrudaofc.libaryAPI.config;
 
 import io.github.daviaarrudaofc.libaryAPI.security.CustomUserDetailsService;
+import io.github.daviaarrudaofc.libaryAPI.security.JwtCustomAuthenticationFilter;
 import io.github.daviaarrudaofc.libaryAPI.security.LoginSocialSuccessHandler;
 import io.github.daviaarrudaofc.libaryAPI.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -29,7 +31,9 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(
-            HttpSecurity http, LoginSocialSuccessHandler successHandler) throws Exception{
+            HttpSecurity http,
+            LoginSocialSuccessHandler successHandler,
+            JwtCustomAuthenticationFilter jwtCustomAuthenticationFilter) throws Exception{
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
@@ -50,6 +54,7 @@ public class SecurityConfiguration {
                 })
                 .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()))// vai usar JWT para
                                                                                                         //validar o usuario
+                .addFilterAfter(jwtCustomAuthenticationFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
 
