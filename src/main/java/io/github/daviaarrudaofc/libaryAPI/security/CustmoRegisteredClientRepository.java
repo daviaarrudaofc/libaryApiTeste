@@ -42,9 +42,10 @@ public class CustmoRegisteredClientRepository implements RegisteredClientReposit
                 .clientSecret(client.getClientSecret())
                 .redirectUri(client.getRedirectURI())
                 .scope(client.getScope())
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC) // Envia client ID e secret pelo cabeçalho Basic para autenticar o cliente.
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) // Permite obter um token após o login do usuário e a troca do código.
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS) // Permite ao cliente obter um token em nome próprio, sem login de usuário.
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN) // Permite trocar um refresh token válido por um novo access token.
                 .tokenSettings(tokenSettings)
                 .clientSettings(clientSettings)
                 .build();
