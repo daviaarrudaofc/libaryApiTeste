@@ -6,6 +6,8 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import io.github.daviaarrudaofc.libaryAPI.model.Client;
+import io.github.daviaarrudaofc.libaryAPI.security.CustomAuthentication;
+import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -13,13 +15,17 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.security.KeyPair;
@@ -27,6 +33,8 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -130,5 +138,29 @@ public class AuthorizationServerConfiguration {
                 .oidcLogoutEndpoint("/oauth2/logout")
 
                 .build();
+    }
+
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(){
+        return context -> {
+            var principal = context.getPrincipal();
+
+            if(principal instanceof CustomAuthentication authentication){
+                OAuth2TokenType tipoToken = context.getTokenType();
+
+                if(OAuth2TokenType.ACCESS_TOKEN.equals(tipoToken)){
+
+                    Collection<GrantedAuthority> authorities = authentication.getAuthorities();
+                    List<String> authoritiesList =
+                            authorities.stream().map(GrantedAuthority::getAuthority).toList();
+
+                    context
+                            .getClaims()
+                            .claim("authorities", authoritiesList)
+                            .claim("email", authentication.getUsuario().getEmail());
+
+                }
+            }
+        };
     }
 }
