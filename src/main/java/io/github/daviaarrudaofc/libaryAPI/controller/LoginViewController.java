@@ -1,6 +1,8 @@
 package io.github.daviaarrudaofc.libaryAPI.controller;
 
 import io.github.daviaarrudaofc.libaryAPI.security.CustomAuthentication;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@Tag(name = "Login")
 public class LoginViewController {
 
     @GetMapping("/login")
@@ -28,6 +31,7 @@ public class LoginViewController {
 
     @GetMapping("/authorized")
     @ResponseBody
+    @Operation(summary = "Authorization code", description = "Código Gerado")
     public String getAuthorizationCode(@RequestParam("code") String code){
         return "Seu authorization code: " + code;
     }

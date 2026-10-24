@@ -49,7 +49,7 @@ public class AutorController implements GenericController {
     @Operation(summary = "Salvar", description = "Cadastrar novo autor")
     @ApiResponses({
             @ApiResponse(responseCode = "201",description = "cadastrado com sucesso"),
-            @ApiResponse(responseCode = "433",description = "erro de validaçãp"),
+            @ApiResponse(responseCode = "433",description = "erro de validação"),
             @ApiResponse(responseCode = "409",description = "autor já cadastrado")
     })
     public ResponseEntity<Void> salvar(@RequestBody @Valid AutorDTO autorDTO){
