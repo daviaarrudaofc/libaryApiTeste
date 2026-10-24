@@ -145,11 +145,15 @@ public class AuthorizationServerConfiguration {
         return context -> {
             var principal = context.getPrincipal();
 
+            // Adiciona dados do usuário apenas quando o principal é o da aplicação
             if(principal instanceof CustomAuthentication authentication){
                 OAuth2TokenType tipoToken = context.getTokenType();
 
+                // Estas informações devem entrar no access token, não em outros tipos de JWT.
                 if(OAuth2TokenType.ACCESS_TOKEN.equals(tipoToken)){
 
+
+                    // Converte as permissões em textos para armazená-las como claim no JWT.
                     Collection<GrantedAuthority> authorities = authentication.getAuthorities();
                     List<String> authoritiesList =
                             authorities.stream().map(GrantedAuthority::getAuthority).toList();
@@ -163,4 +167,7 @@ public class AuthorizationServerConfiguration {
             }
         };
     }
+
+
+
 }
