@@ -20,6 +20,23 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
+logging:
+  file:
+    name: app.log
+  level:
+    root: warn
+    io:
+      github:
+        daviaarrudaofc: trace
+    org:
+      springframework:
+        web: debug
+        security: trace
+    #trace -- ordem de abrangência
+    #debug
+    #info
+    #warn
+    #erro
+
 springdoc:
   override-with-generic-response: false
-
