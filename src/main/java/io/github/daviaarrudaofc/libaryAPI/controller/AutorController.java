@@ -55,6 +55,8 @@ public class AutorController implements GenericController {
             @ApiResponse(responseCode = "409",description = "autor já cadastrado")
     })
     public ResponseEntity<Void> salvar(@RequestBody @Valid AutorDTO autorDTO){
+
+        log.info("Cadastrando novo Autor: {}", autorDTO.nome());
         //antes
         //       var autorEntidade = autor.mapearParaAutor();
         //    autorService.salvar(autorEntidade);
@@ -113,6 +115,8 @@ public class AutorController implements GenericController {
             @ApiResponse(responseCode = "400",description = "autor possui livro cadastrado")
     })
     public ResponseEntity<Void> deletar(@PathVariable("id") String id){
+
+        log.info("Deletando um autor: {}", id);
         var idAutor = UUID.fromString(id);
         Optional<Autor> autorOptional = autorService.obterPorID(idAutor);
         if (autorOptional.isEmpty()) {
@@ -133,11 +137,7 @@ public class AutorController implements GenericController {
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "nacionalidade", required = false) String nacionalidade){
 
-        log.trace("Pesquisa autores: ");
-        log.debug("Pesquisa autores: ");
-        log.info("Pesquisa autores: ");
-        log.warn("Pesquisa autores: ");
-        log.error("Pesquisa autores: ");
+
 
         List<Autor> resultado = autorService.pesquisaByExample(nome, nacionalidade);
         List<AutorDTO> lista = resultado

@@ -5,6 +5,7 @@ import io.github.daviaarrudaofc.libaryAPI.controller.dto.ErroResposta;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.CampoInvalidoException;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.OperacaoNaoPermitidaException;
 import io.github.daviaarrudaofc.libaryAPI.exceptions.RegistroDuplicadoException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,10 +21,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice // Centraliza o tratamento global das exceções lançadas pelos controllers da API.
 @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
 
-
+@Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErroResposta handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
+
+        log.error("Erro de validação: {}", e.getMessage());
         List<FieldError> fieldErrors = e.getFieldErrors();
         List<ErroCampo> listaErros = fieldErrors
                 .stream()
@@ -65,6 +68,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErroResposta handleErrosNaoTratados(RuntimeException e){
+        log.error("Erro inesperado ",e);
         return new ErroResposta(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Ocorreu um erro inesperado . Entre em contato com a administração. "
                 , List.of());
