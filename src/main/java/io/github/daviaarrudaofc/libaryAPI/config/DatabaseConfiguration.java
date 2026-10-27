@@ -2,6 +2,7 @@ package io.github.daviaarrudaofc.libaryAPI.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import javax.sql.DataSource;
 
 
 @Configuration
+@Slf4j
 public class DatabaseConfiguration {
 
     @Value("${spring.datasource.url}")// para pegar do properties ou yml
@@ -35,6 +37,9 @@ public class DatabaseConfiguration {
     @Bean
     public DataSource hikariDataSource(){// esse method cria e registra no Spring  um datasource e configura como
                                         // a aplicação se conecta ao banco e gerencianado um pool de ate 10 conexao
+
+        log.info("Iniciando conexão com o banco na URL: {}", url);
+
         HikariConfig config = new HikariConfig();
         config.setUsername(username);
         config.setPassword(password);

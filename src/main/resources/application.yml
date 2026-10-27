@@ -6,9 +6,9 @@ spring:
 # SPRING_PROFILES_ACTIVE=(o ambiente que vc quer)
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/libary
-    username: postgres
-    password: postgres
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/libary}
+    username: ${DATASOURCE_USERNAME:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
