@@ -1,6 +1,10 @@
 spring:
   application:
     name: libaryAPI
+#  profiles:
+#    active: production
+# SPRING_PROFILES_ACTIVE=(o ambiente que vc quer)
+
   datasource:
     url: jdbc:postgresql://localhost:5432/libary
     username: postgres
@@ -55,3 +59,26 @@ management:
 
 springdoc:
   override-with-generic-response: false
+
+
+# production
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  jpa:
+    show-sql: false
+
+# homologacao
+---
+spring:
+  config:
+    activate:
+      on-profile: homologacao
+  jpa:
+    show-sql: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/libary
+
+
