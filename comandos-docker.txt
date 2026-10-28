@@ -144,3 +144,32 @@ docker ps
 # jdbc:postgresql://localhost:5433/libary
 # Usuário: postgresprod
 # No perfil production, configure também a senha e a URL do datasource.
+========================================
+
+APÓS REINICIAR O COMPUTADOR - BANCO PROD
+
+========================================
+
+1. Abra o Docker Desktop e aguarde ele iniciar.
+
+2. Veja se o container já está rodando:
+
+docker ps -a
+
+3. Se libary-prod estiver parado, inicie-o:
+
+docker start libary-prod
+
+4. Confirme que está rodando:
+
+docker ps
+
+Se não iniciar, veja o motivo:
+
+docker logs libary-prod
+
+IMPORTANTE: não use docker run novamente.
+
+O banco prod usa localhost:5433; o banco dev usa localhost:5432.
+
+O serviço PostgreSQL do Windows na 5432 só causa conflito com o dev.
